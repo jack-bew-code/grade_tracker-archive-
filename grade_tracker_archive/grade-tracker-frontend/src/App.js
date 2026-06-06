@@ -8,7 +8,7 @@ function App() {
   const [courseData, setCourseData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentView, setCurrentView] = useState('grades'); // 'grades' or 'settings'
-  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
+  const apiBaseUrl = (process.env.REACT_APP_API_BASE_URL || window.location.origin).replace(/\/$/, '');
 
   useEffect(() => {
     loadCourse();

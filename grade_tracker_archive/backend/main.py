@@ -13,7 +13,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:8080",
+        "https://2a012387-2908-4c6e-a0a3-4fb6b89601b9.e1-eu-north-azure.choreoapps.dev",
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
