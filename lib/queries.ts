@@ -2,19 +2,25 @@
 import { getSql } from "./db";
 import type { Component, Course, CourseTree, Module, Semester, Year } from "./types";
 
-export async function getCourses(): Promise<Course[]> {
+// Only ever returns courses that belong to this user.
+export async function getCourses(userId: string): Promise<Course[]> {
   const sql = getSql();
-  const rows = await sql`SELECT id, name, weighting_mode, target_grade FROM courses ORDER BY created_at`;
+  const rows = await sql`
+    SELECT id, name, weighting_mode, target_grade FROM courses
+    WHERE user_id = ${userId} ORDER BY created_at
+  `;
   return rows as Course[];
 }
 
 // Loads one course with everything inside it, nested:
 // course.years[].semesters[].modules[].components[]
-export async function getCourseTree(courseId: number): Promise<CourseTree | null> {
+// Returns null if the course doesn't exist or belongs to someone else.
+export async function getCourseTree(courseId: number, userId: string): Promise<CourseTree | null> {
   const sql = getSql();
 
   const courses = (await sql`
-    SELECT id, name, weighting_mode, target_grade FROM courses WHERE id = ${courseId}
+    SELECT id, name, weighting_mode, target_grade FROM courses
+    WHERE id = ${courseId} AND user_id = ${userId}
   `) as Course[];
   if (courses.length === 0) return null;
 

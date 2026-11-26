@@ -1,0 +1,8 @@
+# Files never uploaded to Vercel when deploying
+.env
+.env.*
+!.env.example
+**/.env
+.clerk
+grade_tracker_archive
+scripts

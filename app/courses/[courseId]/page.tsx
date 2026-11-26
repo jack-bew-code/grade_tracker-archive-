@@ -10,6 +10,7 @@ import { CourseTree } from "@/components/course-tree";
 import { Overview } from "@/components/overview";
 import { Plan } from "@/components/plan";
 import { WhatIfSwitch } from "@/components/what-if-switch";
+import { getUserId } from "@/lib/auth";
 import { calculateCourse, classify, mark, pct } from "@/lib/grades";
 import { getCourseTree } from "@/lib/queries";
 
@@ -23,8 +24,9 @@ export default async function CoursePage({ params, searchParams }: Props) {
   const { whatif } = await searchParams;
   const whatIfOn = whatif === "1";
 
-  const course = await getCourseTree(Number(courseId));
-  if (!course) notFound();
+  const userId = await getUserId();
+  const course = await getCourseTree(Number(courseId), userId);
+  if (!course) notFound(); // doesn't exist, or isn't yours
 
   const realStats = calculateCourse(course);
   const whatIfStats = calculateCourse(course, { whatIf: true });

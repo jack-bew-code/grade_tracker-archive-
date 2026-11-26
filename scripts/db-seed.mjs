@@ -1,12 +1,19 @@
-// Adds an example course so you have something to look at.
-// Run with: npm run db:seed   (reads DATABASE_URL from .env.local)
+// Adds an example course to one user's account.
+// Run with: npm run db:seed -- <clerk user id>     e.g. npm run db:seed -- user_2abc...
+// (Find your user id in the Clerk dashboard under Users.)
 import { neon } from "@neondatabase/serverless";
+
+const userId = process.argv[2];
+if (!userId?.startsWith("user_")) {
+  console.error("Give the Clerk user id to add the example course to: npm run db:seed -- user_...");
+  process.exit(1);
+}
 
 const sql = neon(process.env.DATABASE_URL);
 
 const [course] = await sql`
-  INSERT INTO courses (name, weighting_mode, target_grade)
-  VALUES ('BSc Computer Science (example)', 'credits', 70)
+  INSERT INTO courses (name, weighting_mode, target_grade, user_id)
+  VALUES ('BSc Computer Science (example)', 'credits', 70, ${userId})
   RETURNING id
 `;
 

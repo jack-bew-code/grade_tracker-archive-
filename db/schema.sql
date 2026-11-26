@@ -43,3 +43,10 @@ CREATE TABLE IF NOT EXISTS components (
   predicted DOUBLE PRECISION,                      -- a "what-if" mark
   due_date  DATE
 );
+
+-- Added with login: each course belongs to one Clerk user.
+ALTER TABLE courses ADD COLUMN IF NOT EXISTS user_id TEXT;
+CREATE INDEX IF NOT EXISTS courses_user_id_idx ON courses (user_id);
+
+-- Every course must belong to someone (no "unowned" courses that anyone could see).
+ALTER TABLE courses ALTER COLUMN user_id SET NOT NULL;
